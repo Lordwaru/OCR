@@ -1,4 +1,4 @@
-package ocr
+package main
 
 type OCR_pattern struct {
 	Cells struct {
