@@ -1,14 +1,12 @@
 package ocr
 
-type OCR_pattern struct {
-	Cells struct {
-		characters [3]rune
-	}
-}
+/*
 
-type OCR_number struct {
-	number []OCR_pattern
-}
+	' ' = 32,
+	'|' = 124,
+	'_' = 95
+
+*/
 
 /*
 
