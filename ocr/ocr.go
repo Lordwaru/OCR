@@ -1,24 +1,24 @@
 package ocr
 
 type OCR_number struct {
-	number []OCR_pattern
+	Number []OCR_pattern
 }
 
 type OCR_pattern struct {
 	Cells struct {
-		characters [3]rune
+		Characters [3]rune
 	}
 }
 
 func Compare(A OCR_number, B OCR_number) bool {
-	for i, row := range A.number {
-		if row.Cells.characters[0] != B.number[i].Cells.characters[0] {
+	for i, row := range A.Number {
+		if row.Cells.Characters[0] != B.Number[i].Cells.Characters[0] {
 			return false
 		}
-		if row.Cells.characters[1] != B.number[i].Cells.characters[1] {
+		if row.Cells.Characters[1] != B.Number[i].Cells.Characters[1] {
 			return false
 		}
-		if row.Cells.characters[2] != B.number[i].Cells.characters[2] {
+		if row.Cells.Characters[2] != B.Number[i].Cells.Characters[2] {
 			return false
 		}
 	}
