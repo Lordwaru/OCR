@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Lordwaru/OCR/accounts"
@@ -11,14 +13,10 @@ import (
 )
 
 func main() {
-	CreateInputFile(9, "ocr.txt")
+	//CreateInputFile(500, "ocr.txt")
 
 	account_list := GetData("ocr.txt")
-
-	for _, v := range account_list {
-		fmt.Println(v)
-		fmt.Println(accounts.Validate(v))
-	}
+	PrintReport(account_list)
 
 }
 
@@ -67,4 +65,56 @@ func GetData(filepath string) []accounts.Account {
 	}
 
 	return parsed
+}
+
+func PrintReport(account_list []accounts.Account) {
+	var sb strings.Builder
+	err_flag := false
+	for _, v := range account_list {
+		for _, u := range v.Number {
+			if u == 11 {
+				err_flag = true
+			}
+		}
+		if !err_flag {
+			if accounts.Validate(v) {
+				//print 457508000 OK
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+				sb.WriteString(" ")
+				sb.WriteString("OK")
+				sb.WriteString("\n")
+
+			} else {
+				//664371495 ERR
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+				sb.WriteString(" ")
+				sb.WriteString("ERR")
+				sb.WriteString("\n")
+
+			}
+		} else {
+			//86110??36 ILL
+			for _, n := range v.Number {
+				if n != 11 {
+					sb.WriteString(strconv.Itoa(n))
+				} else {
+					sb.WriteString("?")
+				}
+
+			}
+			sb.WriteString(" ")
+			sb.WriteString("ILL")
+			sb.WriteString("\n")
+
+		}
+		err_flag = false
+
+	}
+	output := []byte(sb.String())
+	err := os.WriteFile("out.txt", output, 0644)
+	check(err)
 }
