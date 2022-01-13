@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	//CreateInputFile(500, "ocr.txt")
+	//CreateDefaultInputFile("data/default.txt")
 
-	account_list := GetData("ocr.txt")
+	account_list := GetData("data/default.txt")
 	PrintReport(account_list)
 
 }
@@ -30,6 +30,45 @@ func CreateInputFile(amount int, filename string) {
 		}
 		str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
 	}
+
+	output := []byte(str)
+	err := os.WriteFile(filename, output, 0644)
+	check(err)
+}
+
+func CreateDefaultInputFile(filename string) {
+	var ocr_num [9]int
+
+	str := ""
+
+	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 0, 0}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{1, 1, 1, 1, 1, 1, 1, 1, 1}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{2, 2, 2, 2, 2, 2, 2, 2, 2}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{3, 3, 3, 3, 3, 3, 3, 3, 3}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{4, 4, 4, 4, 4, 4, 4, 4, 4}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{5, 5, 5, 5, 5, 5, 5, 5, 5}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{6, 6, 6, 6, 6, 6, 6, 6, 6}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{7, 7, 7, 7, 7, 7, 7, 7, 7}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{8, 8, 8, 8, 8, 8, 8, 8, 8}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{9, 9, 9, 9, 9, 9, 9, 9, 9}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 5, 1}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{4, 9, 0, 0, 6, 7, 7, 1, 11}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	ocr_num = [9]int{1, 2, 3, 4, 11, 6, 7, 8, 11}
+	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
 
 	output := []byte(str)
 	err := os.WriteFile(filename, output, 0644)
@@ -115,6 +154,6 @@ func PrintReport(account_list []accounts.Account) {
 
 	}
 	output := []byte(sb.String())
-	err := os.WriteFile("out.txt", output, 0644)
+	err := os.WriteFile("data/out.txt", output, 0644)
 	check(err)
 }
