@@ -7,7 +7,7 @@ package ocr
 	'_' = 45
 
 	000000000
-	 -  -  -  -  -  -  -  -  - | || || || || || || || || | -  -  -  -  -  -  -  -  -
+	_  _  _  _  _  _  _  _  _ | || || || || || || || || ||_||_||_||_||_||_||_||_||_|
 
 
 */
@@ -19,7 +19,7 @@ package ocr
 */
 func One() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', ' ', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{' ', ' ', '|'}
@@ -37,7 +37,7 @@ func One() OCR_number {
 */
 func Two() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{' ', '_', '|'}
@@ -54,7 +54,7 @@ _|
 */
 func Three() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{' ', '_', '|'}
@@ -72,7 +72,7 @@ func Three() OCR_number {
 */
 func Four() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', ' ', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', '_', '|'}
@@ -90,7 +90,7 @@ func Four() OCR_number {
 */
 func Five() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', '_', ' '}
@@ -108,7 +108,7 @@ func Five() OCR_number {
 */
 func Six() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', '_', ' '}
@@ -126,7 +126,7 @@ _
 */
 func Seven() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{' ', ' ', '|'}
@@ -145,7 +145,7 @@ func Seven() OCR_number {
 
 func Eight() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', '_', '|'}
@@ -164,7 +164,7 @@ func Eight() OCR_number {
 
 func Nine() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', '_', '|'}
@@ -183,7 +183,7 @@ func Nine() OCR_number {
 
 func Zero() OCR_number {
 	var o_number OCR_number
-	var cheatsheet [3]OCR_pattern
+	var cheatsheet [3]Row
 
 	cheatsheet[0].Cells.Characters = [3]rune{' ', '_', ' '}
 	cheatsheet[1].Cells.Characters = [3]rune{'|', ' ', '|'}
