@@ -14,7 +14,7 @@ func main() {
 
 	str := string(data)
 
-	ocr_num := ocr.GetDigits(str)
+	ocr_num := ocr.Parse(str)
 
 	fmt.Println(ocr_num)
 

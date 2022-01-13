@@ -24,7 +24,7 @@ func Count(str string) (int, bool) {
 }
 
 /* Must be a string of 162 characters */
-func GetOCRRow(str string) []OCR_number {
+func Read(str string) []OCR_number {
 
 	ocr_num := make([]OCR_number, 9)
 
