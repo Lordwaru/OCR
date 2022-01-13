@@ -15,5 +15,4 @@ func Validate(acc Account) bool {
 		3*acc.Number[6]+
 		2*acc.Number[7]+
 		1*acc.Number[8])%11 == 0)
-
 }
