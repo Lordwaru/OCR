@@ -1,6 +1,8 @@
 package ocr
 
-import "strings"
+import (
+	"strings"
+)
 
 type OCR_number struct {
 	Number []Row
@@ -104,6 +106,7 @@ func IntArrayToString(arr []int) string {
 			}
 		}
 	*/
+
 	return sb.String()
 }
 
