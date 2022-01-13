@@ -6,31 +6,20 @@ import (
 	"os"
 	"time"
 
+	"github.com/Lordwaru/OCR/accounts"
 	"github.com/Lordwaru/OCR/ocr"
 )
 
 func main() {
+	CreateInputFile(9, "ocr.txt")
 
-	data, err := os.ReadFile("ocr.txt")
-	check(err)
+	account_list := GetData("ocr.txt")
 
-	str := string(data)
-
-	count, flag := ocr.Count(str)
-
-	if !flag {
-		fmt.Println("Invalid file lenght cannot parse")
-		os.Exit(0)
+	for _, v := range account_list {
+		fmt.Println(v)
+		fmt.Println(accounts.Validate(v))
 	}
 
-	for i := 0; i < count; i++ {
-
-		ocr_num := ocr.Read(str[i*162 : i*162+162])
-		parsed := ocr.ParseToIntArray(ocr_num)
-		fmt.Println(parsed)
-	}
-
-	//CreateInputFile(9, "ocr.txt")
 }
 
 func CreateInputFile(amount int, filename string) {
@@ -53,4 +42,29 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
+}
+
+func GetData(filepath string) []accounts.Account {
+
+	data, err := os.ReadFile(filepath)
+	check(err)
+
+	str := string(data)
+
+	count, flag := ocr.Count(str)
+
+	if !flag {
+		fmt.Println("Invalid file lenght cannot parse")
+		os.Exit(0)
+	}
+
+	parsed := make([]accounts.Account, count)
+
+	for i := 0; i < count; i++ {
+
+		ocr_num := ocr.Read(str[i*162 : i*162+162])
+		parsed[i].Number = ocr.ParseToIntArray(ocr_num)
+	}
+
+	return parsed
 }
