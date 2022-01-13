@@ -21,23 +21,17 @@ func main() {
 	fmt.Println((len(data)))
 	str := string(data)
 
-	i := 0
-	for _, d := range str[0:3] {
+	for i, d := range str[0:3] {
 		number_a.Number[0].Cells.Characters[i] = d
-		i++
+
 	}
 
-	i = 0
-
-	for _, d := range str[27:30] {
+	for i, d := range str[27:30] {
 		number_a.Number[1].Cells.Characters[i] = d
-		i++
 	}
 
-	i = 0
-	for _, d := range str[54:57] {
+	for i, d := range str[54:57] {
 		number_a.Number[2].Cells.Characters[i] = d
-		i++
 	}
 
 	fmt.Println(number_a.Number)
