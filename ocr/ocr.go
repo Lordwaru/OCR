@@ -84,6 +84,8 @@ func IntArrayToString(arr []int) string {
 			ocr_num[i] = Eight()
 		case 9:
 			ocr_num[i] = Nine()
+		default:
+			ocr_num[i] = Fake()
 		}
 	}
 

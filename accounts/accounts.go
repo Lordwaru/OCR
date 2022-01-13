@@ -4,18 +4,6 @@ type Account struct {
 	Number []int
 }
 
-func PrintReport(account_list []Account) {
-	for _, v := range account_list {
-
-		if Validate(v) {
-
-		} else {
-
-		}
-	}
-
-}
-
 //checksum calculation (1*d1 + 2*d2 + 3*d3 + … + 9*d9) mod 11 = 0
 func Validate(acc Account) bool {
 	return ((1*acc.Number[0]+

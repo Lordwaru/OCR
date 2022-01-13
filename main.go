@@ -26,7 +26,7 @@ func CreateInputFile(amount int, filename string) {
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < amount; i++ {
 		for j := range ocr_num {
-			ocr_num[j] = rand.Intn(10)
+			ocr_num[j] = rand.Intn(11)
 		}
 		str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
 	}

@@ -27,8 +27,20 @@ package ocr
     _  _  _  _  _  _  _  _
 */
 
+func Fake() OCR_number {
+	var o_number OCR_number
+	var cheatsheet [3]Row
+
+	cheatsheet[0].Cells.Characters = [3]rune{' ', ' ', ' '}
+	cheatsheet[1].Cells.Characters = [3]rune{'_', '_', '|'}
+	cheatsheet[2].Cells.Characters = [3]rune{' ', ' ', '|'}
+
+	o_number.Number = cheatsheet[:]
+
+	return o_number
+}
+
 /*
-     |  |
 |
 |
 */
