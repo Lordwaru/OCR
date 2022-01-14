@@ -1,6 +1,6 @@
 OCR Reader
 
-Reads numbers in a similar to a digital digits display
+Reads numbers similar to a digital digits display from a .txt file or from a http request.
 
 
 Recognizes numbers following a pattern that's defined on ocr_patterns, and stores them in an integer array 
@@ -25,12 +25,14 @@ If there was a non reconized number patter it returns
 
 replacing the unrecognized pattern number position with a ?
 
-on the repo file branch its written to "./data/out.txt"
+on the repo branch "files" 
+
+it takes input from "data/default.txt" and the output its written to "./data/out.txt"
 
 
 REST Instrucions
 
-repo rest branch
+repo dev branch
 
 exec go run main.go
 
