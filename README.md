@@ -1,7 +1,6 @@
-OCR Reader
+#OCR Reader
 
 Reads numbers similar to a digital digits display from a .txt file or from a http request.
-
 
 Recognizes numbers following a pattern that's defined on ocr_patterns, and stores them in an integer array 
 if the pattern doesn't match any number it stores an double digit number(11).
@@ -25,13 +24,14 @@ If there was a non reconized number patter it returns
 
 replacing the unrecognized pattern number position with a ?
 
-on the repo branch "files" 
+
+##Files
+On the repo branch "files" 
 
 it takes input from "data/default.txt" and the output its written to "./data/out.txt"
 
 
-REST Instrucions
-
+##REST Instrucions
 repo dev branch
 
 exec go run main.go
@@ -47,8 +47,6 @@ The response contains a JSON array with the elements presented as such
 {"account_number":"?23?06849","status":"ILL"}
 
 the status evaluations are the same as above.
-
-
 
 TODO
 
