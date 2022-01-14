@@ -1,8 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -10,13 +14,80 @@ import (
 
 	"github.com/Lordwaru/OCR/accounts"
 	"github.com/Lordwaru/OCR/ocr"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
+type AccountsJSON struct {
+	AccountNumber string `json:"account_number"`
+	Status        string `json:"status"`
+}
+
+type Response struct {
+	Status  int
+	Message string
+	Data    interface{}
+}
+
 func main() {
+	//Here to create a different test file
 	//CreateDefaultInputFile("data/default.txt")
 
-	account_list := GetData("data/default.txt")
-	PrintReport(account_list)
+	//For files
+	//account_list := GetData("data/default.txt")
+	//PrintReport(account_list)
+
+	router := mux.NewRouter().StrictSlash(true)
+
+	router.HandleFunc("/ocr", OcrService)
+
+	handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Origin", "Cache-Control", "X-App-Token", "Authorization", "Access-Control-Allow-Origin"}),
+		handlers.ExposedHeaders([]string{""}),
+		handlers.MaxAge(1000),
+		handlers.AllowCredentials(),
+	)(router))
+
+	handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
+
+	http.ListenAndServe(":8080", handler)
+	fmt.Println("Service started on port 8080")
+}
+
+func OcrService(w http.ResponseWriter, req *http.Request) {
+	body, err := ioutil.ReadAll(req.Body)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	response := GetDataFromString(string(body))
+
+	switch response.Status {
+	case http.StatusOK:
+		w.WriteHeader(http.StatusOK)
+		json_str, err := json.Marshal(response)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		fmt.Fprintln(w, string(json_str))
+	default:
+		json_str, err := json.Marshal(response)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		} else {
+			w.WriteHeader(response.Status)
+			fmt.Fprintln(w, string(json_str))
+		}
+	}
+
+	if err != nil {
+		log.Panic(err)
+	}
 
 }
 
@@ -81,7 +152,7 @@ func check(e error) {
 	}
 }
 
-func GetData(filepath string) []accounts.Account {
+func GetDataFromFile(filepath string) []accounts.Account {
 
 	data, err := os.ReadFile(filepath)
 	check(err)
@@ -104,6 +175,82 @@ func GetData(filepath string) []accounts.Account {
 	}
 
 	return parsed
+}
+
+func GetDataFromString(str string) Response {
+
+	count, flag := ocr.Count(str)
+
+	if !flag {
+		var response Response
+		response.Message = "Invalid file length cannot parse"
+		response.Data = nil
+		response.Status = 500
+
+		return response
+	}
+
+	list := make([]accounts.Account, count)
+
+	for i := 0; i < count; i++ {
+
+		ocr_num := ocr.Read(str[i*162 : i*162+162])
+		list[i].Number = ocr.ParseToIntArray(ocr_num)
+	}
+
+	var json_list []AccountsJSON
+
+	err_flag := false
+	for _, v := range list {
+		for _, u := range v.Number {
+			if u == 11 {
+				err_flag = true
+			}
+		}
+
+		if !err_flag {
+			if accounts.Validate(v) {
+				var sb strings.Builder
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+
+				json_list = append(json_list, AccountsJSON{sb.String(), "0K"})
+
+			} else {
+				//664371495 ERR
+				var sb strings.Builder
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+				json_list = append(json_list, AccountsJSON{sb.String(), "ERR"})
+
+			}
+		} else {
+			//86110??36 ILL
+			var sb strings.Builder
+			for _, n := range v.Number {
+				if n != 11 {
+					sb.WriteString(strconv.Itoa(n))
+				} else {
+					sb.WriteString("?")
+				}
+
+			}
+
+			json_list = append(json_list, AccountsJSON{sb.String(), "ILL"})
+
+		}
+		err_flag = false
+
+	}
+
+	var response Response
+	response.Message = "Success"
+	response.Data = json_list
+	response.Status = 200
+
+	return response
 }
 
 func PrintReport(account_list []accounts.Account) {

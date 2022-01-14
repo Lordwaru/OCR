@@ -16,7 +16,7 @@ type Row struct {
 
 /*Each line of OCR numbers must consist of 162 characters*/
 func Count(str string) (int, bool) {
-	if len(str)%162 == 0 {
+	if len(str)%162 == 0 && len(str) != 0 {
 		n := len(str) / 162
 		return n, true
 	} else {
