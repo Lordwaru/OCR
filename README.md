@@ -1,4 +1,4 @@
-#OCR Reader
+# OCR Reader
 
 Reads numbers similar to a digital digits display from a .txt file or from a http request.
 
@@ -25,14 +25,16 @@ If there was a non reconized number patter it returns
 replacing the unrecognized pattern number position with a ?
 
 
-##Files
-On the repo branch "files" 
+## Files
+
+**On the repo branch "files"**
 
 it takes input from "data/default.txt" and the output its written to "./data/out.txt"
 
 
-##REST Instrucions
-repo dev branch
+## REST Instrucions
+
+**repo dev branch**
 
 exec go run main.go
 
