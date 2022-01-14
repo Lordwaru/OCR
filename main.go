@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	//Here to create a different test file
+	//To create a different test file
 	//CreateDefaultInputFile("data/default.txt")
 
 	//For files
