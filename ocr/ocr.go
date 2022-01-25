@@ -1,6 +1,7 @@
 package ocr
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -14,10 +15,10 @@ type Row struct {
 	}
 }
 
-/*Each line of OCR numbers must consist of 162 characters*/
+/*Each line of OCR numbers must consist of 112 characters*/
 func Count(str string) (int, bool) {
-	if len(str)%162 == 0 && len(str) != 0 {
-		n := len(str) / 162
+	if len(str)%112 == 0 && len(str) != 0 {
+		n := len(str) / 112
 		return n, true
 	} else {
 		return 0, false
@@ -25,7 +26,18 @@ func Count(str string) (int, bool) {
 
 }
 
-/* Must be a string of 162 characters */
+/*Each line of OCR numbers must consist of 85 characters*/
+func CountByte(str []byte) (int, bool) {
+	if (len(str)+2)%85 == 0 && len(str) != 0 {
+		n := (len(str) + 2) / 85
+		return n, true
+	} else {
+		return 0, false
+	}
+
+}
+
+/* Must be a string of 85 characters */
 func Read(str string) []OCR_number {
 
 	ocr_num := make([]OCR_number, 9)
@@ -38,8 +50,11 @@ func Read(str string) []OCR_number {
 	x := 0
 	y := 0
 
-	for _, r := range str[0:81] {
+	for _, r := range str[:] {
 
+		if r == '\n' {
+			continue
+		}
 		ocr_num[n].Number[x].Cells.Characters[y] = r
 		y++
 		if y > 2 {
@@ -55,6 +70,8 @@ func Read(str string) []OCR_number {
 			x = 0
 		}
 	}
+
+	fmt.Println(ocr_num)
 
 	return ocr_num[:]
 }

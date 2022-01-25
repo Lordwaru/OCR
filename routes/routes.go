@@ -1,17 +1,20 @@
 package routes
 
 import (
-	"encoding/json"
+	"encoding/base64"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/Lordwaru/OCR/accounts"
 	"github.com/Lordwaru/OCR/ocr"
+	"github.com/gin-gonic/gin"
 )
+
+type EncodedOCR struct {
+	Content string `json:"content"`
+}
 
 type AccountsJSON struct {
 	AccountNumber string `json:"account_number"`
@@ -24,37 +27,21 @@ type Response struct {
 	Data    interface{}
 }
 
-func OcrService(w http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+func OcrService(c *gin.Context) {
+	var encoded_json EncodedOCR
 
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+	if err := c.BindJSON(&encoded_json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	response := GetDataFromString(string(body))
+	response := GetDataFromEncodedString(encoded_json.Content)
 
 	switch response.Status {
 	case http.StatusOK:
-		w.WriteHeader(http.StatusOK)
-		json_str, err := json.Marshal(response)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		fmt.Fprintln(w, string(json_str))
+		c.JSON(http.StatusOK, response)
 	default:
-		json_str, err := json.Marshal(response)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		} else {
-			w.WriteHeader(response.Status)
-			fmt.Fprintln(w, string(json_str))
-		}
-	}
-
-	if err != nil {
-		log.Panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid string cannot parse"})
 	}
 
 }
@@ -98,6 +85,96 @@ func GetDataFromString(str string) Response {
 				}
 
 				json_list = append(json_list, AccountsJSON{sb.String(), "0K"})
+
+			} else {
+				//664371495 ERR
+				var sb strings.Builder
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+				json_list = append(json_list, AccountsJSON{sb.String(), "ERR"})
+
+			}
+		} else {
+			//86110??36 ILL
+			var sb strings.Builder
+			for _, n := range v.Number {
+				if n != 11 {
+					sb.WriteString(strconv.Itoa(n))
+				} else {
+					sb.WriteString("?")
+				}
+
+			}
+
+			json_list = append(json_list, AccountsJSON{sb.String(), "ILL"})
+
+		}
+		err_flag = false
+
+	}
+
+	var response Response
+	response.Message = "Success"
+	response.Data = json_list
+	response.Status = 200
+
+	return response
+}
+
+func GetDataFromEncodedString(str string) Response {
+
+	decoded, err := base64.StdEncoding.DecodeString(str)
+
+	if err != nil {
+		var response Response
+		response.Status = 500
+
+		return response
+	}
+
+	fmt.Println(len(decoded))
+	fmt.Println(decoded)
+
+	count, flag := ocr.CountByte(decoded)
+
+	fmt.Println(count)
+
+	if !flag {
+		var response Response
+		response.Status = 500
+
+		return response
+	}
+
+	list := make([]accounts.Account, count)
+
+	runes := string(decoded)
+
+	for i := 0; i < count; i++ {
+
+		ocr_num := ocr.Read(runes[i*85 : i*85+83])
+		list[i].Number = ocr.ParseToIntArray(ocr_num)
+	}
+
+	var json_list []AccountsJSON
+
+	err_flag := false
+	for _, v := range list {
+		for _, u := range v.Number {
+			if u == 11 {
+				err_flag = true
+			}
+		}
+
+		if !err_flag {
+			if accounts.Validate(v) {
+				var sb strings.Builder
+				for _, n := range v.Number {
+					sb.WriteString(strconv.Itoa(n))
+				}
+
+				json_list = append(json_list, AccountsJSON{sb.String(), "OK"})
 
 			} else {
 				//664371495 ERR

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -12,8 +11,7 @@ import (
 	"github.com/Lordwaru/OCR/accounts"
 	"github.com/Lordwaru/OCR/ocr"
 	"github.com/Lordwaru/OCR/routes"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -24,23 +22,31 @@ func main() {
 	//account_list := GetData("data/default.txt")
 	//PrintReport(account_list)
 
-	router := mux.NewRouter().StrictSlash(true)
+	/*
+		router := mux.NewRouter().StrictSlash(true)
 
-	router.HandleFunc("/ocr", routes.OcrService)
+		router.HandleFunc("/ocr", routes.OcrService)
 
-	handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
-		handlers.AllowedHeaders([]string{"Content-Type", "Origin", "Cache-Control", "X-App-Token", "Authorization", "Access-Control-Allow-Origin"}),
-		handlers.ExposedHeaders([]string{""}),
-		handlers.MaxAge(1000),
-		handlers.AllowCredentials(),
-	)(router))
+		handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Origin", "Cache-Control", "X-App-Token", "Authorization", "Access-Control-Allow-Origin"}),
+			handlers.ExposedHeaders([]string{""}),
+			handlers.MaxAge(1000),
+			handlers.AllowCredentials(),
+		)(router))
 
-	handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
+		handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
 
-	http.ListenAndServe(":8080", handler)
-	fmt.Println("Service started on port 8080")
+		http.ListenAndServe(":8080", handler)
+		fmt.Println("Service started on port 8080")*/
+
+	router := gin.Default()
+
+	router.POST("/ocr", routes.OcrService)
+
+	router.Run(":8080")
+
 }
 
 func CreateInputFile(amount int, filename string) {
