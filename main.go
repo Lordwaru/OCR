@@ -57,7 +57,12 @@ func CreateInputFile(amount int, filename string) {
 		for j := range ocr_num {
 			ocr_num[j] = rand.Intn(11)
 		}
-		str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+		if i < amount {
+			str += ocr.IntArrayToString(ocr_num[:]) + "\n"
+		} else {
+			str += ocr.IntArrayToString(ocr_num[:])
+		}
+
 	}
 
 	output := []byte(str)
@@ -71,33 +76,33 @@ func CreateDefaultInputFile(filename string) {
 	str := ""
 
 	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 0, 0}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{1, 1, 1, 1, 1, 1, 1, 1, 1}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{2, 2, 2, 2, 2, 2, 2, 2, 2}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{3, 3, 3, 3, 3, 3, 3, 3, 3}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{4, 4, 4, 4, 4, 4, 4, 4, 4}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{5, 5, 5, 5, 5, 5, 5, 5, 5}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{6, 6, 6, 6, 6, 6, 6, 6, 6}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{7, 7, 7, 7, 7, 7, 7, 7, 7}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{8, 8, 8, 8, 8, 8, 8, 8, 8}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{9, 9, 9, 9, 9, 9, 9, 9, 9}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 5, 1}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{4, 9, 0, 0, 6, 7, 7, 1, 11}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
 	ocr_num = [9]int{1, 2, 3, 4, 11, 6, 7, 8, 11}
-	str += ocr.IntArrayToString(ocr_num[:]) + "                                                                                 "
+	str += ocr.IntArrayToString(ocr_num[:])
 
 	output := []byte(str)
 	err := os.WriteFile(filename, output, 0644)
@@ -120,7 +125,7 @@ func GetDataFromFile(filepath string) []accounts.Account {
 	count, flag := ocr.Count(str)
 
 	if !flag {
-		fmt.Println("Invalid file lenght cannot parse")
+		fmt.Println("Invalid file length cannot parse")
 		os.Exit(0)
 	}
 
@@ -128,7 +133,7 @@ func GetDataFromFile(filepath string) []accounts.Account {
 
 	for i := 0; i < count; i++ {
 
-		ocr_num := ocr.Read(str[i*162 : i*162+162])
+		ocr_num := ocr.Read(str[i*85 : i*85+83]) //disregard the last two linejumps
 		parsed[i].Number = ocr.ParseToIntArray(ocr_num)
 	}
 

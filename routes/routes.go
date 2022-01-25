@@ -41,7 +41,7 @@ func OcrService(c *gin.Context) {
 	case http.StatusOK:
 		c.JSON(http.StatusOK, response)
 	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid string cannot parse"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": response.Message})
 	}
 
 }
@@ -52,7 +52,7 @@ func GetDataFromString(str string) Response {
 
 	if !flag {
 		var response Response
-		response.Message = "Invalid file length cannot parse"
+		response.Message = "Invalid string length cannot parse"
 		response.Data = nil
 		response.Status = 500
 
@@ -62,8 +62,7 @@ func GetDataFromString(str string) Response {
 	list := make([]accounts.Account, count)
 
 	for i := 0; i < count; i++ {
-
-		ocr_num := ocr.Read(str[i*162 : i*162+162])
+		ocr_num := ocr.Read(str[i*85 : i*85+83])
 		list[i].Number = ocr.ParseToIntArray(ocr_num)
 	}
 
@@ -84,7 +83,7 @@ func GetDataFromString(str string) Response {
 					sb.WriteString(strconv.Itoa(n))
 				}
 
-				json_list = append(json_list, AccountsJSON{sb.String(), "0K"})
+				json_list = append(json_list, AccountsJSON{sb.String(), "OK"})
 
 			} else {
 				//664371495 ERR
@@ -128,8 +127,9 @@ func GetDataFromEncodedString(str string) Response {
 
 	if err != nil {
 		var response Response
-		response.Status = 500
 
+		response.Status = 500
+		response.Message = "Invalid json object"
 		return response
 	}
 
@@ -138,11 +138,10 @@ func GetDataFromEncodedString(str string) Response {
 
 	count, flag := ocr.CountByte(decoded)
 
-	fmt.Println(count)
-
 	if !flag {
 		var response Response
 		response.Status = 500
+		response.Message = "Invalid string length"
 
 		return response
 	}

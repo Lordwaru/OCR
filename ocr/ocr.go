@@ -1,7 +1,6 @@
 package ocr
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -15,18 +14,23 @@ type Row struct {
 	}
 }
 
-/*Each line of OCR numbers must consist of 112 characters*/
+/*
+Each line of OCR numbers must consist of 85 characters, except the last number that's why
+we pad the lenght with +2 to compensate for the missing last two line jump (\n)
+*/
 func Count(str string) (int, bool) {
-	if len(str)%112 == 0 && len(str) != 0 {
-		n := len(str) / 112
+	if (len(str)+2)%85 == 0 && len(str) != 0 {
+		n := (len(str) + 2) / 85
 		return n, true
 	} else {
 		return 0, false
 	}
-
 }
 
-/*Each line of OCR numbers must consist of 85 characters*/
+/*
+Each line of OCR numbers must consist of 85 characters, except the last number that's why
+we pad the lenght with +2 to compensate for the missing last two line jump (\n)
+*/
 func CountByte(str []byte) (int, bool) {
 	if (len(str)+2)%85 == 0 && len(str) != 0 {
 		n := (len(str) + 2) / 85
@@ -37,7 +41,7 @@ func CountByte(str []byte) (int, bool) {
 
 }
 
-/* Must be a string of 85 characters */
+/* Must be a string of 83 characters */
 func Read(str string) []OCR_number {
 
 	ocr_num := make([]OCR_number, 9)
@@ -70,8 +74,6 @@ func Read(str string) []OCR_number {
 			x = 0
 		}
 	}
-
-	fmt.Println(ocr_num)
 
 	return ocr_num[:]
 }
@@ -114,17 +116,9 @@ func IntArrayToString(arr []int) string {
 				v := ocr_num[n].Number[x].Cells.Characters[y]
 				sb.WriteRune(v)
 			}
+			sb.WriteRune('\n')
 		}
 	}
-	/*
-		for _, t := range ocr_num {
-			for _, u := range t.Number {
-				for _, v := range u.Cells.Characters {
-					sb.WriteRune(v)
-				}
-			}
-		}
-	*/
 
 	return sb.String()
 }
