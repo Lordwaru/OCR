@@ -7,21 +7,19 @@ import (
 	"strings"
 
 	"github.com/Lordwaru/OCR/accounts"
-	"github.com/Lordwaru/OCR/db"
 	"github.com/Lordwaru/OCR/ocr"
+	"github.com/Lordwaru/OCR/routes"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 
-	/*
-		router := gin.Default()
+	router := gin.Default()
 
-		router.OPTIONS("/ocr", routes.OcrService)
-		router.POST("/ocr", routes.OcrService)
+	router.OPTIONS("/ocr", routes.OcrService)
+	router.POST("/ocr", routes.OcrService)
 
-		router.Run(":8080")*/
-
-	db.Create("aaa", []accounts.AccountsJSON{})
+	router.Run(":8080")
 
 }
 

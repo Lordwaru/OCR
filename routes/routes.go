@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/base64"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -129,9 +128,6 @@ func GetDataFromEncodedString(encoded_list string) Response {
 		response.Message = "Invalid json object"
 		return response
 	}
-
-	fmt.Println(len(decoded))
-	fmt.Println(decoded)
 
 	count, flag := ocr.CountByte(decoded)
 
