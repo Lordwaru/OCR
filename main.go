@@ -2,111 +2,27 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/Lordwaru/OCR/accounts"
+	"github.com/Lordwaru/OCR/db"
 	"github.com/Lordwaru/OCR/ocr"
-	"github.com/Lordwaru/OCR/routes"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	//To create a different test file
-	//CreateDefaultInputFile("data/default.txt")
-
-	//For files
-	//account_list := GetData("data/default.txt")
-	//PrintReport(account_list)
 
 	/*
-		router := mux.NewRouter().StrictSlash(true)
+		router := gin.Default()
 
-		router.HandleFunc("/ocr", routes.OcrService)
+		router.OPTIONS("/ocr", routes.OcrService)
+		router.POST("/ocr", routes.OcrService)
 
-		handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
-			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
-			handlers.AllowedHeaders([]string{"Content-Type", "Origin", "Cache-Control", "X-App-Token", "Authorization", "Access-Control-Allow-Origin"}),
-			handlers.ExposedHeaders([]string{""}),
-			handlers.MaxAge(1000),
-			handlers.AllowCredentials(),
-		)(router))
+		router.Run(":8080")*/
 
-		handler = handlers.RecoveryHandler(handlers.PrintRecoveryStack(true))(handler)
+	db.Create("aaa", []accounts.AccountsJSON{})
 
-		http.ListenAndServe(":8080", handler)
-		fmt.Println("Service started on port 8080")*/
-
-	router := gin.Default()
-
-	router.POST("/ocr", routes.OcrService)
-
-	router.Run(":8080")
-
-}
-
-func CreateInputFile(amount int, filename string) {
-	var ocr_num [9]int
-	str := ""
-	rand.Seed(time.Now().Unix())
-	for i := 0; i < amount; i++ {
-		for j := range ocr_num {
-			ocr_num[j] = rand.Intn(11)
-		}
-		if i < amount {
-			str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-		} else {
-			str += ocr.IntArrayToString(ocr_num[:])
-		}
-
-	}
-
-	output := []byte(str)
-	err := os.WriteFile(filename, output, 0644)
-	check(err)
-}
-
-func CreateDefaultInputFile(filename string) {
-	var ocr_num [9]int
-
-	str := ""
-
-	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 0, 0}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{1, 1, 1, 1, 1, 1, 1, 1, 1}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{2, 2, 2, 2, 2, 2, 2, 2, 2}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{3, 3, 3, 3, 3, 3, 3, 3, 3}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{4, 4, 4, 4, 4, 4, 4, 4, 4}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{5, 5, 5, 5, 5, 5, 5, 5, 5}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{6, 6, 6, 6, 6, 6, 6, 6, 6}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{7, 7, 7, 7, 7, 7, 7, 7, 7}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{8, 8, 8, 8, 8, 8, 8, 8, 8}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{9, 9, 9, 9, 9, 9, 9, 9, 9}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{0, 0, 0, 0, 0, 0, 0, 5, 1}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{4, 9, 0, 0, 6, 7, 7, 1, 11}
-	str += ocr.IntArrayToString(ocr_num[:]) + "\n"
-	ocr_num = [9]int{1, 2, 3, 4, 11, 6, 7, 8, 11}
-	str += ocr.IntArrayToString(ocr_num[:])
-
-	output := []byte(str)
-	err := os.WriteFile(filename, output, 0644)
-	check(err)
 }
 
 func check(e error) {

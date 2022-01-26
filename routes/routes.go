@@ -8,17 +8,14 @@ import (
 	"strings"
 
 	"github.com/Lordwaru/OCR/accounts"
+	"github.com/Lordwaru/OCR/db"
+
 	"github.com/Lordwaru/OCR/ocr"
 	"github.com/gin-gonic/gin"
 )
 
 type EncodedOCR struct {
-	Content string `json:"content"`
-}
-
-type AccountsJSON struct {
-	AccountNumber string `json:"account_number"`
-	Status        string `json:"status"`
+	Content string `json:"content" binding:"required"`
 }
 
 type Response struct {
@@ -66,7 +63,7 @@ func GetDataFromString(str string) Response {
 		list[i].Number = ocr.ParseToIntArray(ocr_num)
 	}
 
-	var json_list []AccountsJSON
+	var json_list []accounts.AccountsJSON
 
 	err_flag := false
 	for _, v := range list {
@@ -83,7 +80,7 @@ func GetDataFromString(str string) Response {
 					sb.WriteString(strconv.Itoa(n))
 				}
 
-				json_list = append(json_list, AccountsJSON{sb.String(), "OK"})
+				json_list = append(json_list, accounts.AccountsJSON{sb.String(), "OK"})
 
 			} else {
 				//664371495 ERR
@@ -91,7 +88,7 @@ func GetDataFromString(str string) Response {
 				for _, n := range v.Number {
 					sb.WriteString(strconv.Itoa(n))
 				}
-				json_list = append(json_list, AccountsJSON{sb.String(), "ERR"})
+				json_list = append(json_list, accounts.AccountsJSON{sb.String(), "ERR"})
 
 			}
 		} else {
@@ -106,7 +103,7 @@ func GetDataFromString(str string) Response {
 
 			}
 
-			json_list = append(json_list, AccountsJSON{sb.String(), "ILL"})
+			json_list = append(json_list, accounts.AccountsJSON{sb.String(), "ILL"})
 
 		}
 		err_flag = false
@@ -121,9 +118,9 @@ func GetDataFromString(str string) Response {
 	return response
 }
 
-func GetDataFromEncodedString(str string) Response {
+func GetDataFromEncodedString(encoded_list string) Response {
 
-	decoded, err := base64.StdEncoding.DecodeString(str)
+	decoded, err := base64.StdEncoding.DecodeString(encoded_list)
 
 	if err != nil {
 		var response Response
@@ -156,7 +153,7 @@ func GetDataFromEncodedString(str string) Response {
 		list[i].Number = ocr.ParseToIntArray(ocr_num)
 	}
 
-	var json_list []AccountsJSON
+	var json_list []accounts.AccountsJSON
 
 	err_flag := false
 	for _, v := range list {
@@ -173,7 +170,7 @@ func GetDataFromEncodedString(str string) Response {
 					sb.WriteString(strconv.Itoa(n))
 				}
 
-				json_list = append(json_list, AccountsJSON{sb.String(), "OK"})
+				json_list = append(json_list, accounts.AccountsJSON{sb.String(), "OK"})
 
 			} else {
 				//664371495 ERR
@@ -181,7 +178,7 @@ func GetDataFromEncodedString(str string) Response {
 				for _, n := range v.Number {
 					sb.WriteString(strconv.Itoa(n))
 				}
-				json_list = append(json_list, AccountsJSON{sb.String(), "ERR"})
+				json_list = append(json_list, accounts.AccountsJSON{sb.String(), "ERR"})
 
 			}
 		} else {
@@ -196,12 +193,14 @@ func GetDataFromEncodedString(str string) Response {
 
 			}
 
-			json_list = append(json_list, AccountsJSON{sb.String(), "ILL"})
+			json_list = append(json_list, accounts.AccountsJSON{sb.String(), "ILL"})
 
 		}
 		err_flag = false
 
 	}
+
+	db.Create(encoded_list, json_list)
 
 	var response Response
 	response.Message = "Success"
