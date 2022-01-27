@@ -22,7 +22,7 @@ and returns
 123456789 OK  If it fullfils the condition
 ```
 
-If there was a non reconized number patter it returns
+If there was a non reconized number pattern it returns
 
 ```
 49006771? ILL
@@ -53,7 +53,9 @@ The response contains a JSON array with the elements presented as such
 
 Status evaluations are the same as above.
 
-###Database###
+###
+Database
+###
 Create db using ocr.sql
 
 
