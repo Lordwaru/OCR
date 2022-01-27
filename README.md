@@ -53,9 +53,8 @@ The response contains a JSON array with the elements presented as such
 
 Status evaluations are the same as above.
 
-##
-Database
-##
+
+## Database
 Create db using ocr.sql
 
 
