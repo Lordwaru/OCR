@@ -4,6 +4,12 @@ type Account struct {
 	Number []int
 }
 
+type AccountsByOriginId struct {
+	Origin_id   int            `json:"id"`
+	Origin_data string         `json:"encoded_data"`
+	Accounts    []AccountsJSON `json:"accounts"`
+}
+
 type AccountsJSON struct {
 	AccountNumber string `json:"account_number" db:"account_number"`
 	Status        string `json:"status" db:"status"`

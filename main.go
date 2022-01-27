@@ -16,8 +16,9 @@ func main() {
 
 	router := gin.Default()
 
-	router.OPTIONS("/ocr", routes.OcrService)
-	router.POST("/ocr", routes.OcrService)
+	router.POST("/ocr/create", routes.CreateAccounts)
+	router.GET("/ocr/accounts/", routes.GetAccounts)
+	router.GET("/ocr/accounts/:id", routes.GetAccountsById)
 
 	router.Run(":8080")
 

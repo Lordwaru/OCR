@@ -23,7 +23,7 @@ type Response struct {
 	Data    interface{}
 }
 
-func OcrService(c *gin.Context) {
+func CreateAccounts(c *gin.Context) {
 	var encoded_json EncodedOCR
 
 	if err := c.BindJSON(&encoded_json); err != nil {
@@ -31,7 +31,16 @@ func OcrService(c *gin.Context) {
 		return
 	}
 
-	response := GetDataFromEncodedString(encoded_json.Content)
+	response := ParseDataFromEncodedString(encoded_json.Content)
+
+	og_id := db.InsertOriginData(encoded_json.Content)
+	err := db.InsertAccounts(og_id, response.Data.([]accounts.AccountsJSON))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": response.Message})
+	}
+
+	//db.Create(encoded_list, json_list)
 
 	switch response.Status {
 	case http.StatusOK:
@@ -42,7 +51,37 @@ func OcrService(c *gin.Context) {
 
 }
 
-func GetDataFromString(str string) Response {
+func GetAccounts(c *gin.Context) {
+	accs := db.GetAllAccounts()
+
+	c.JSON(http.StatusOK, accs)
+}
+
+func GetAccountsById(c *gin.Context) {
+
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "resource not valid"})
+		return
+	}
+
+	ogd := db.GetOriginalDataById(id)
+	accs := db.GetAccountsByOriginId(id)
+
+	if false {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "resource not found"})
+	} else {
+		c.JSON(http.StatusOK, accounts.AccountsByOriginId{
+			Origin_id:   id,
+			Origin_data: ogd,
+			Accounts:    accs,
+		})
+	}
+
+}
+
+func ParseDataFromString(str string) Response {
 
 	count, flag := ocr.Count(str)
 
@@ -117,14 +156,14 @@ func GetDataFromString(str string) Response {
 	return response
 }
 
-func GetDataFromEncodedString(encoded_list string) Response {
+func ParseDataFromEncodedString(encoded_list string) Response {
 
 	decoded, err := base64.StdEncoding.DecodeString(encoded_list)
 
 	if err != nil {
 		var response Response
 
-		response.Status = 500
+		response.Status = http.StatusBadRequest
 		response.Message = "Invalid json object"
 		return response
 	}
@@ -133,7 +172,7 @@ func GetDataFromEncodedString(encoded_list string) Response {
 
 	if !flag {
 		var response Response
-		response.Status = 500
+		response.Status = http.StatusBadRequest
 		response.Message = "Invalid string length"
 
 		return response
@@ -196,12 +235,10 @@ func GetDataFromEncodedString(encoded_list string) Response {
 
 	}
 
-	db.Create(encoded_list, json_list)
-
 	var response Response
 	response.Message = "Success"
 	response.Data = json_list
-	response.Status = 200
+	response.Status = http.StatusOK
 
 	return response
 }
