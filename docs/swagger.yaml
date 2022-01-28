@@ -1,0 +1,41 @@
+definitions:
+  accounts.AccountsByOriginId:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/accounts.AccountsJSON'
+        type: array
+      encoded_data:
+        type: string
+      id:
+        type: integer
+    type: object
+  accounts.AccountsJSON:
+    properties:
+      account_number:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /ocr/accounts/:
+    get:
+      consumes:
+      - application/json
+      description: Returns an array with all the accounts, it's status nested by the
+        original encoded base64 string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: hi
+          schema:
+            items:
+              $ref: '#/definitions/accounts.AccountsByOriginId'
+            type: array
+      summary: ping example
+      tags:
+      - ocr
+swagger: "2.0"
