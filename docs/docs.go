@@ -23,9 +23,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/ocr/accounts/": {
+        "/v1/ocr/accounts/": {
             "get": {
-                "description": "Returns an array with all the accounts, it's status nested by the original encoded base64 string",
+                "description": "Returns an array with all the accounts and it's status, nested by the original encoded base64 string",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,14 +35,72 @@ var doc = `{
                 "tags": [
                     "ocr"
                 ],
-                "summary": "ping example",
+                "summary": "Returns all the accounts",
                 "responses": {
                     "200": {
-                        "description": "hi",
+                        "description": "success",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/accounts.AccountsByOriginId"
+                                "$ref": "#/definitions/entity.AccountsByOriginId"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/ocr/accounts/{id}": {
+            "get": {
+                "description": "Returns a json object with the id, ocr data encoded in base64, and an array for the accounts and its status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ocr"
+                ],
+                "summary": "Returns accounts by the resource id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "$ref": "#/definitions/entity.AccountsByOriginId"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/ocr/create-accounts/": {
+            "post": {
+                "description": "Creates a resource for the OCR number list and returns an array with all the accounts, it's status nested by the original encoded base64 string",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ocr"
+                ],
+                "summary": "Posts a OCR number list",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.AccountsJSON"
                             }
                         }
                     }
@@ -51,13 +109,13 @@ var doc = `{
         }
     },
     "definitions": {
-        "accounts.AccountsByOriginId": {
+        "entity.AccountsByOriginId": {
             "type": "object",
             "properties": {
                 "accounts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/accounts.AccountsJSON"
+                        "$ref": "#/definitions/entity.AccountsJSON"
                     }
                 },
                 "encoded_data": {
@@ -68,7 +126,7 @@ var doc = `{
                 }
             }
         },
-        "accounts.AccountsJSON": {
+        "entity.AccountsJSON": {
             "type": "object",
             "properties": {
                 "account_number": {

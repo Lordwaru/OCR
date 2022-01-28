@@ -1,16 +1,16 @@
 definitions:
-  accounts.AccountsByOriginId:
+  entity.AccountsByOriginId:
     properties:
       accounts:
         items:
-          $ref: '#/definitions/accounts.AccountsJSON'
+          $ref: '#/definitions/entity.AccountsJSON'
         type: array
       encoded_data:
         type: string
       id:
         type: integer
     type: object
-  accounts.AccountsJSON:
+  entity.AccountsJSON:
     properties:
       account_number:
         type: string
@@ -20,22 +20,62 @@ definitions:
 info:
   contact: {}
 paths:
-  /ocr/accounts/:
+  /v1/ocr/accounts/:
     get:
       consumes:
       - application/json
-      description: Returns an array with all the accounts, it's status nested by the
-        original encoded base64 string
+      description: Returns an array with all the accounts and it's status, nested
+        by the original encoded base64 string
       produces:
       - application/json
       responses:
         "200":
-          description: hi
+          description: success
           schema:
             items:
-              $ref: '#/definitions/accounts.AccountsByOriginId'
+              $ref: '#/definitions/entity.AccountsByOriginId'
             type: array
-      summary: ping example
+      summary: Returns all the accounts
+      tags:
+      - ocr
+  /v1/ocr/accounts/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a json object with the id, ocr data encoded in base64,
+        and an array for the accounts and its status
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/entity.AccountsByOriginId'
+      summary: Returns accounts by the resource id
+      tags:
+      - ocr
+  /v1/ocr/create-accounts/:
+    post:
+      consumes:
+      - application/json
+      description: Creates a resource for the OCR number list and returns an array
+        with all the accounts, it's status nested by the original encoded base64 string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            items:
+              $ref: '#/definitions/entity.AccountsJSON'
+            type: array
+      summary: Posts a OCR number list
       tags:
       - ocr
 swagger: "2.0"

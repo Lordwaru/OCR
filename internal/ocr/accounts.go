@@ -1,6 +1,7 @@
 package ocr
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/Lordwaru/OCR/internal/entity"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -83,6 +85,13 @@ func SelectAccountsById(c *gin.Context) {
 	}
 
 	ogd := GetOriginalDataById(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+
+	}
+
 	accs := GetAccountsByOriginId(id)
 
 	if false {
@@ -230,9 +239,15 @@ func GetOriginalDataById(og_id int) string {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var ogd entity.OriginData
 
-	err = db.Select(&ogd, "SELECT * FROM accounts WHERE origin_id= ?", og_id)
+	row := db.QueryRowx("SELECT * FROM origin_data WHERE origin_id= ?", og_id)
+
+	var ogd entity.OriginData
+	err = row.Scan(&ogd.Origin_id, &ogd.Encoded_list)
+
+	if err == sql.ErrNoRows {
+		//log.Fatal(err)
+	}
 
 	return ogd.Encoded_list
 
