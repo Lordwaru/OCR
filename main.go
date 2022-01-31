@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/Lordwaru/OCR/docs"
 	"github.com/Lordwaru/OCR/internal/ocr"
 	"github.com/gin-gonic/gin"
@@ -16,8 +18,19 @@ func main() {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	router.LoadHTMLGlob("templates/*")
+	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
+	router.GET("/index", GetIndex)
+
 	ocr.AddHandlers(router)
 
 	router.Run(":8080")
 
+}
+
+func GetIndex(c *gin.Context) {
+	accs := ocr.SelectAllAccounts()
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"accounts": accs,
+	})
 }
