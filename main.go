@@ -18,7 +18,11 @@ func main() {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	router.LoadHTMLGlob("templates/*")
+	router.Static("/css", "./web/css")
+	router.Static("/fonts", "./web/fonts")
+	router.Static("/js", "./web/js")
+
+	router.LoadHTMLGlob("web/templates/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	router.GET("/index", GetIndex)
 
